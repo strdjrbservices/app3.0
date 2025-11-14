@@ -117,3 +117,11 @@ export const checkFinalValueBracketing = (field, text, allData) => {
 
     return { isMatch: true, message: "Final value is bracketed by comparable sales prices." };
 };
+
+export const checkReconciliationFieldsNotBlank = (field, text) => {
+    const fieldsToCheck = ['final value'];
+    if (fieldsToCheck.includes(field) && (!text || String(text).trim() === '')) {
+        return { isError: true, message: `'${field}' should not be blank.` };
+    }
+    return null;
+};

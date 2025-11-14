@@ -1,6 +1,9 @@
 html {
   scroll-behavior: smooth;
 }
+.css-1t3pplt,.css-tt3eps,.css-2vdc11,.css-15xvylo,.css-1qlcbbw,.CAR1.bg-primary, .CAR1.bg-secondary, .CAR1.bg-info, .CAR1.bg-warning, .CAR1.bg-success, .CAR1.bg-danger, .CAR1.bg-dark, .CAR1.bg-light{
+  background-color: #0288d1 !important;
+}
 
 :root {
   --bg-color: #f4f7f9;

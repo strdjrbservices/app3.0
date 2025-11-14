@@ -6,7 +6,7 @@ import { checkZoning, checkZoningDescription, checkSpecificZoningClassification,
 import { checkHousingPriceAndAge, checkNeighborhoodUsageConsistency, checkSingleChoiceFields, checkNeighborhoodBoundaries, checkNeighborhoodFieldsNotBlank } from './neighborhoodValidation';
 import { checkUnits, checkAccessoryUnit, checkNumberOfStories, checkPropertyType, checkConstructionStatusAndReconciliation, checkDesignStyle, checkYearBuilt, checkEffectiveAge, checkAdditionalFeatures, checkPropertyConditionDescription, checkPhysicalDeficienciesImprovements, checkNeighborhoodConformity, checkFoundationType, checkBasementDetails, checkEvidenceOf, checkMaterialCondition, checkHeatingFuel, checkCarStorage, checkImprovementsFieldsNotBlank } from './improvementsValidation';
 import { checkConditionAdjustment, checkBedroomsAdjustment, checkBathsAdjustment, checkQualityOfConstructionAdjustment, checkProximityToSubject, checkSiteAdjustment, checkGrossLivingAreaAdjustment, checkSubjectAddressInconsistency, checkDesignStyleAdjustment, checkFunctionalUtilityAdjustment, checkEnergyEfficientItemsAdjustment, checkPorchPatioDeckAdjustment, checkHeatingCoolingAdjustment, checkDataSourceDOM, checkActualAgeAdjustment, checkLeaseholdFeeSimpleConsistency, checkDateOfSale, checkLocationConsistency, checkSalePrice } from './salesComparisonValidation';
-import { checkFinalValueConsistency, checkCostApproachDeveloped, checkAppraisalCondition, checkAsOfDate, checkFinalValueBracketing } from './reconciliationValidation';
+import { checkFinalValueConsistency, checkCostApproachDeveloped, checkAppraisalCondition, checkAsOfDate, checkFinalValueBracketing, checkReconciliationFieldsNotBlank } from './reconciliationValidation';
 import { checkLenderAddressInconsistency, checkLenderNameInconsistency, checkAppraiserFieldsNotBlank } from './appraiserLenderValidation';
 import { checkCostNew, checkSourceOfCostData, checkIndicatedValueByCostApproach, checkCostApproachFieldsNotBlank } from './costApproachValidation';
 import { checkResearchHistory, checkSubjectPriorSales, checkComparablePriorSales, checkDataSourceNotBlank, checkEffectiveDateIsCurrentYear, checkSubjectPriorSaleDate, checkCompPriorSaleDate } from './salesHistoryValidation';
@@ -14,7 +14,7 @@ import { checkStateRequirements } from './stateValidation';
 import { checkIncomeApproachFieldsNotBlank } from './incomeApproachValidation';
 import { checkPudInformationFieldsNotBlank } from './pudInformationValidation';
 import { checkMarketConditionsFieldsNotBlank } from './marketConditionsValidation';
-import { Tooltip, Box, LinearProgress } from '@mui/material';
+import { Tooltip, Box, LinearProgress,Paper,Typography } from '@mui/material';
 
 
 const HighlightKeywords = ({ text, keywords }) => {
@@ -174,6 +174,7 @@ export const EditableField = ({ fieldPath, value, onDataChange, editingField, se
     'This appraisal is made "as is", subject to completion per plans and specifications on the basis of a hypothetical condition that the improvements have been completed, subject to the following repairs or alterations on the basis of a hypothetical condition that the repairs or alterations have been completed, or subject to the following required inspection based on the extraordinary assumption that the condition or deficiency does not require alteration or repair:': [checkAppraisalCondition],
     'as of': [checkAsOfDate],
 
+    'final value': [checkFinalValueBracketing, checkReconciliationFieldsNotBlank],
     // Appraiser/Lender Validations
     'Lender/Client Company Address': [checkLenderAddressInconsistency],
 
@@ -558,6 +559,19 @@ export const GridInfoCard = ({ id, title, fields, data, cardClass = 'bg-secondar
     return <span style={totalStyle}>Total: {total}%</span>;
   };
 
+  const cardHeaderColors = {
+    'bg-primary': 'primary.main',
+    'bg-secondary': 'secondary.main',
+    'bg-info': 'info.main',
+    'bg-warning': 'warning.main',
+    'bg-success': 'success.main',
+    'bg-danger': 'error.main',
+    'bg-dark': 'grey.900',
+  };
+
+  const headerBgColor = cardHeaderColors[cardClass] || 'grey.700';
+  const headerColor = cardClass === 'bg-warning' ? 'text.primary' : 'common.white';
+
   const renderValue = (value) => {
     if (typeof value === 'object' && value !== null) {
       if (value.hasOwnProperty('choice')) {
@@ -623,24 +637,25 @@ export const GridInfoCard = ({ id, title, fields, data, cardClass = 'bg-secondar
   };
 
   return (
-    <div id={id} className="card shadow mb-4">
-      {id === 'neighborhood-section' && (
-        <div className="card-header grid-info-header bg-secondary">
-          <h5 className="grid-info-title"> </h5>
-        </div>
-      )}
-      <div className={`card-header grid-info-header ${cardClass}`}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-          <h5 className="grid-info-title">{title}</h5>
+    <Paper id={id} elevation={2} sx={{ mb: 2 }}>
+      <Box
+        sx={{
+          p: 1.5,
+          bgcolor: headerBgColor,
+          color: headerColor,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}>
+        <Typography variant="h6" component="h5">{title}</Typography>
           {renderNeighborhoodTotal()}
-        </div>
-      </div>
+      </Box>
       {loading && loadingSection === id && (
         <Box sx={{ width: '100%' }}><LinearProgress /></Box>
       )}
       <div className="card-body subject-grid-container">
         {fields.map(field => renderGridItem(field))}
       </div>
-    </div>
+    </Paper>
   );
 };  

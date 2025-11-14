@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './Subject.css';
 import { GlobalStyles } from '@mui/system';
-import InfoIcon from '@mui/icons-material/Info';
+import { Info, Warning as WarningIcon, Brightness4 as Brightness4Icon, Brightness7 as Brightness7Icon, Close as CloseIcon, CheckCircleOutline as CheckCircleOutlineIcon, ErrorOutline as ErrorOutlineIcon } from '@mui/icons-material';
 import { Button, Stack, List, ListItem, ListItemButton, ListItemText, FormControl, InputLabel, Select, MenuItem, IconButton, Tooltip, Paper, Box, Typography, LinearProgress, Alert, Snackbar, Fade, CircularProgress, ThemeProvider, CssBaseline, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Grid } from '@mui/material';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -14,13 +14,7 @@ import UnpaidOkCheck, { UNPAID_OK_PROMPT } from './UnpaidOkCheck';
 import ClientRequirementCheck, { CLIENT_REQUIREMENT_PROMPT } from './ClientRequirementCheck';
 import EscalationCheck, { ESCALATION_CHECK_PROMPT } from './EscalationCheck';
 import FhaCheck, { FHA_REQUIREMENTS_PROMPT } from './FhaCheck';
-import WarningIcon from '@mui/icons-material/Warning';
 import { lightTheme, darkTheme } from '../../theme';
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
-import CloseIcon from '@mui/icons-material/Close';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import uploadSoundFile from '../../Assets/upload.mp3';
 import successSoundFile from '../../Assets/success.mp3';
 import errorSoundFile from '../../Assets/error.mp3';
@@ -46,6 +40,18 @@ const TooltipStyles = () => (
       whiteSpace: 'nowrap',
       zIndex: 1000,
       marginBottom: '5px',
+    },
+    '.sidebar-link.active': {
+      transform: 'scale(1.05)',
+      boxShadow: '0 4px 8px rgba(255, 255, 255, 0.2)',
+      backgroundColor: '#7587ebff !important',
+      color: '#ffffff !important',
+      transition: 'transform 0.2s ease-in-out, boxShadow 0.2s ease-in-out',
+    },
+    '.section-active': {
+      backgroundColor: 'rgba(22, 20, 20, 0.2) !important', // Light blue with some transparency
+      transition: 'background-color 0.3s ease-in-out',
+      borderRadius: '8px',
     }
   }} />
 );
@@ -424,14 +430,12 @@ const PromptAnalysis = ({ onPromptSubmit, loading, response, error, submittedPro
   // };
 
   const prompt1 = "Verify that the subject property address is consistent across the Subject section, Sales Grid, Location Map, and Aerial Map.\nAlso please confirm subject street, front and rear photo are present and no duplicates.";
-  const prompt2 = "Compare the bedroom and bathroom counts between the Improvements section, Sales Grid, and all available floor plans/ sktech/ building sketch and all photos.";
-  const prompt3 = "Check for any discrepancies in the Gross Living Area (GLA) across all sections of the report.";
+  const prompt2 = "1.Compare the bedroom and bathroom counts between the Improvements section, Sales Grid, and all available floor plans/ sktech/ building sketch and all photos. 2.Check for any discrepancies in the Gross Living Area (GLA) across all sections of the report";
   const prompt4 = "Match all comparable property addresses between the Sales Grid, photo pages, and the Location Map. Also please confirm no duplicates.";
   const prompt5 = "Verify all Photo labels and no duplicate photos.";
-  const prompt6 = "Please check and verify if below revision requests are addressed in the file.&#10;&#10;The date lease begins of rental comp# 3 is noted as Owner, please revise&#10;&#10;If addressed by comments, please verify if particular section is updated.&#10;&#10;If addressed, provide answer as revision and state corrected or not corrected. Keep it short.&#10;&#10;Below are extra points to confirm, don't address or treat as revision, just verify&#10;&#10;Also, please check if any checkboxes, or field are blank, if yes highlight in short&#10;&#10;consider below,&#10;&#10;if assignment type is refinance, then contract section should be blank, even checkboxes.&#10;&#10;If purchase, the appropriate field and checkboxes should be marked.&#10;&#10;In garage, check and validate according to checkboxes marked. &#10;&#10;Check if appraised value is matched at in total 4 locations.&#10;&#10;The signature date should be greater than effective date. Effective date is as of date.&#10;&#10;In signature page Company Name/AMC Name should include Fastapp&#10;&#10;Check for prior services, exposure comment, check is appraiser invoice is attached if yes need to remove.&#10;&#10;Please answer 1 per line not in paragraph";
-  const supplementalAddendumPrompt = "Check if the following sections are present in the PDF. For each, only answer 'Present' or 'Not Present': SUPPLEMENTAL ADDENDUM, ADDITIONAL COMMENTS, APPRAISER'S CERTIFICATION:, SUPERVISORY APPRAISER'S CERTIFICATION:, Analysis/Comments, GENERAL INFORMATION ON ANY REQUIRED REPAIRS, UNIFORM APPRAISAL DATASET (UAD) DEFINITIONS ADDENDUM";
-  const uniformResidentialAppraisalReportPrompt = "Check if the following sections are present in the PDF. For each, only answer 'Present' or 'Not Present': SCOPE OF WORK:, INTENDED USE:, INTENDED USER:, DEFINITION OF MARKET VALUE:, STATEMENT OF ASSUMPTIONS AND LIMITING CONDITIONS:";
-  const appraisalReportIdPrompt = "Check if the following sections are present in the PDF. For each, only answer 'Present' or 'Not Present': This Report is one of the following types:, Comments on Standards Rule 2-3, Reasonable Exposure Time, Comments on Appraisal and Report Identification:";
+  const prompt6 = "Please check and verify if below revision requests are addressed in the file.&#10;&#10;The date lease begins of rental comp# 3 is noted as Owner, please revise&#10;&#10;If addressed by comments, please verify if particular section is updated.&#10;&#10;If addressed, provide answer as revision and state corrected or not corrected. Keep it short.&#10;&#10;Below are extra points to confirm, don't address or treat as revision, just verify&#10;&#10;Also, please check if any checkboxes, or field are blank, if yes highlight in short&#10;&#10;consider below,&#10;&#10;if assignment type is refinance, then contract section should be blank, even checkboxes.&#10;&#10;If purchase, the appropriate field and checkboxes should be marked.&#10;&#10;In garage, check and validate according to checkboxes marked. &#10;&#10;Check if appraised value is matched at in total 4 locations.&#10;&#10;The signature date should be greater than effective date. Effective date is as of date.&#10;&#10;In signature page Company Name/AMC Name should include Fastapp&#10;&#10;Check for prior services, exposure comment, check is appraiser invoice is attached if yes need to remove.&#10;&#10;Please answer 1 per line not in paragraph 3.Check if the following sections are present in the PDF. For each, only answer 'Present' or 'Not Present': This Report is one of the following types:, Comments on Standards Rule 2-3, Reasonable Exposure Time, Comments on Appraisal and Report Identification:";
+  const supplementalAddendumPrompt = "1.Check if the following sections are present in the PDF. For each, only answer 'Present' or 'Not Present': SUPPLEMENTAL ADDENDUM, ADDITIONAL COMMENTS, APPRAISER'S CERTIFICATION:, SUPERVISORY APPRAISER'S CERTIFICATION:, Analysis/Comments, GENERAL INFORMATION ON ANY REQUIRED REPAIRS, UNIFORM APPRAISAL DATASET (UAD) DEFINITIONS ADDENDUM 2.Check if the following sections are present in the PDF. For each, only answer 'Present' or 'Not Present': SCOPE OF WORK:, INTENDED USE:, INTENDED USER:, DEFINITION OF MARKET VALUE:, STATEMENT OF ASSUMPTIONS AND LIMITING CONDITIONS";
+
 
   const renderResponse = (response) => {
     let data = response;
@@ -557,13 +561,10 @@ const PromptAnalysis = ({ onPromptSubmit, loading, response, error, submittedPro
           <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
             <Button variant="outlined" size="small" onClick={() => onPromptSubmit(prompt1)} disabled={loading}>Verify Subject Address & Photos</Button>
             <Button variant="outlined" size="small" onClick={() => onPromptSubmit(prompt2)} disabled={loading}>Compare Room Counts</Button>
-            <Button variant="outlined" size="small" onClick={() => onPromptSubmit(prompt3)} disabled={loading}>Check GLA Discrepancies</Button>
             <Button variant="outlined" size="small" onClick={() => onPromptSubmit(prompt4)} disabled={loading}>Match Comp Addresses</Button>
             <Button variant="outlined" size="small" onClick={() => onPromptSubmit(prompt5)} disabled={loading}>Verify Photo Labels & Duplicates</Button>
             <Button variant="outlined" size="small" onClick={() => onPromptSubmit(prompt6)} disabled={loading}>Revision Requests Check</Button>
-            <Button variant="outlined" size="small" onClick={() => onPromptSubmit(supplementalAddendumPrompt)} disabled={loading}>Supplemental Addendum</Button>
-            <Button variant="outlined" size="small" onClick={() => onPromptSubmit(uniformResidentialAppraisalReportPrompt)} disabled={loading}>Uniform Residential Appraisal Report</Button>
-            <Button variant="outlined" size="small" onClick={() => onPromptSubmit(appraisalReportIdPrompt)} disabled={loading}>Appraisal and Report Identification</Button>
+            <Button variant="outlined" size="small" onClick={() => onPromptSubmit(supplementalAddendumPrompt)} disabled={loading}>Page Present Check</Button>
           </Stack>
           {loading && <CircularProgress size={24} />}
         </Stack>
@@ -1232,18 +1233,7 @@ function Subject() {
     { id: 'pud-info-section', title: 'PUD Information', category: 'PUD_INFO' },
     { id: 'market-conditions-section', title: 'Market Conditions', category: 'MARKET_CONDITIONS' },
     { id: 'condo-coop-section', title: 'Condo/Co-op', category: ['CONDO', 'CONDO_FORECLOSURE'] },
-    // { id: 'condo-section', title: 'Condo', category: 'CONDO},
-    // { id: 'condo-foreclosure-section', title: 'Condo Foreclosure', category: '' },
     { id: 'appraiser-section', title: 'CERTIFICATION', category: 'CERTIFICATION' }, // This should be condo coop projects
-    // { id: 'supplemental-addendum-section', title: 'Supplemental Addendum', category: 'ADDENDUM' },
-    // { id: 'uniform-report-section', title: 'Uniform Report', category: 'UNIFORM_REPORT' },
-    // { id: 'appraisal-id-section', title: 'Appraisal ID', category: 'APPRAISAL_ID' },
-    // { id: 'state-requirement-section', title: 'State Requirement', category: 'STATE_REQUIREMENT_FIELDS' },
-
-    // { id: 'comparable-address-consistency-section', title: 'Comp Address Consistency' },
-    { id: 'data-consistency-section', title: 'Data Consistency', category: 'DATA_CONSISTENCY' },
-    { id: 'comparable-address-consistency-section', title: 'Comp Address Consistency', category: 'IMAGE_ANALYSIS' },
-
     { id: 'prompt-analysis-section', title: 'Prompt Analysis' },
     { id: 'raw-output', title: 'Raw Output' },
 
@@ -1952,6 +1942,20 @@ function Subject() {
     handleExtract(section.category);
   };
 
+  useEffect(() => {
+    // Remove previous highlight
+    document.querySelectorAll('.section-active').forEach(el => {
+      el.classList.remove('section-active');
+    });
+
+    // Add highlight to the new active section
+    if (activeSection) {
+      const element = document.getElementById(activeSection);
+      if (element) {
+        element.classList.add('section-active');
+      }
+    }
+  }, [activeSection]);
   // const handleRefresh = () => {
   //   setData({});
   //   setActiveSection(null);
@@ -2209,172 +2213,216 @@ function Subject() {
             <img
               src={process.env.PUBLIC_URL + '/logo.png'}
               alt="logo"
-              className="logo"
+              className="logo" style={{ height: '50px' }}
             />
             <h2 className="app-title">Appraisal Report</h2>
           </div>
 
 
 
-          <Paper elevation={2} sx={{ p: 2, position: 'sticky', top: 0, zIndex: 1100, height: 'fit-content', backgroundColor: activeTheme.palette.background.paper }}>
-            <Stack spacing={0.5}>
-
-
-              <Grid container spacing={2} alignItems="center">
-                <Grid item xs={12}>
-                  <Button
-                    variant="outlined"
-                    component="label"
-
-                    className='select'
-                  >
-                    Select PDF File
-                    <input
-                      type="file"
-                      hidden
-                      accept=".pdf,application/pdf"
-                      ref={fileInputRef}
-                      onChange={onFileChange}
-                    />
-                  </Button>
-                </Grid>
-                <Grid item xs={12} sm={4}>
-                  <FormControl size="small">
-                    <InputLabel id="form-type-select-label">Form Type</InputLabel>
-                    <Select
-                      labelId="form-type-select-label"
-                      id="form-type-select"
-                      value={selectedFormType}
-                      label="Form Type"
-                      onChange={(e) => setSelectedFormType(e.target.value)}
-                      className='select'
-                    >
-                      {formTypes.map(type => <MenuItem key={type} value={type}>{type}</MenuItem>)}
-                    </Select>
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12} sm={4}>
-                  <Button variant="contained" className='select' color="primary" onClick={handleGeneratePdf} disabled={Object.keys(data).length === 0} fullWidth>
-                    {isGeneratingPdf ? <CircularProgress size={24} color="inherit" /> : 'Generate PDF'}
-                  </Button>
-                </Grid>
-                <Grid item xs={12} sm={4}>
-                  <Button variant="outlined" className='select' color="info" onClick={() => setIsComparisonDialogOpen(true)} fullWidth>
-                    Fast App
-                  </Button>
-                </Grid>
+          <Paper
+            elevation={2}
+            sx={{
+              p: 2,
+              top: 0,
+              zIndex: 1100,
+              height: "fit-content",
+              backgroundColor: activeTheme.palette.background.paper,
+            }}
+          >
+            <Grid
+              container
+              spacing={2}
+              alignItems="center"
+              sx={{ display: "flex", flexWrap: "nowrap" }}
+            >
+              {/* Select File */}
+              <Grid item>
+                <Button variant="outlined" component="label" className="select">
+                  Select PDF File
+                  <input
+                    type="file"
+                    hidden
+                    accept=".pdf,application/pdf"
+                    ref={fileInputRef}
+                    onChange={onFileChange}
+                  />
+                </Button>
               </Grid>
-              {selectedFile &&
-                <Grid container spacing={2} alignItems="center" sx={{ mt: 1 }}>
-                  <Grid item xs={12} sm={6}>
-                    <Typography variant="body2" noWrap>
-                      Selected File: <strong>{selectedFile.name}</strong>
-                    </Typography>
-                    {data['FHA Case No.'] && (
-                      <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}>
-                        <Typography variant="body2" noWrap sx={{ fontWeight: 'bold', color: 'secondary.main' }}>
-                          FHA Case #: {data['FHA Case No.']}
-                        </Typography>
-                        <Tooltip title="Check FHA Requirements">
-                          <IconButton onClick={handleFhaCheck} size="small" sx={{ ml: 1 }}>
-                            <InfoIcon fontSize="small" color="info" />
-                          </IconButton>
-                        </Tooltip>
-                      </Box>
-                    )}
 
-                    {data['ANSI'] && (
-                      <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}>
-                        <Typography variant="body2" sx={{ fontWeight: 'bold', mr: 3 }}>
-                          ANSI:
-                        </Typography>
-                        <EditableField style={{ maxwidth: 'auto', marginLeft: '30px', marginRight: '30px' }} fieldPath={['ANSI']} value={data['ANSI']} onDataChange={handleDataChange} editingField={editingField} setEditingField={setEditingField} isEditable={isEditable} allData={data} />
-                      </Box>
-                    )}
+              {/* Form Type Dropdown */}
+              <Grid item sx={{ minWidth: 200 }}>
+                <FormControl size="small" fullWidth>
+                  <InputLabel id="form-type-select-label">Form Type</InputLabel>
+                  <Select
+                    labelId="form-type-select-label"
+                    id="form-type-select"
+                    value={selectedFormType}
+                    label="Form Type"
+                    onChange={(e) => setSelectedFormType(e.target.value)}
+                    className="select"
+                  >
+                    {formTypes.map((type) => (
+                      <MenuItem key={type} value={type}>
+                        {type}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
 
+              {/* Fast App Button */}
+              <Grid item>
+                <Button
+                  variant="outlined" component="label" className="select"
+                  color="primary"
+                  onClick={() => setIsComparisonDialogOpen(true)}
+                >
+                  Fast App
+                </Button>
+              </Grid>
 
-                    {data['Exposure comment'] && (
-                      <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}>
-                        <Typography variant="body2" noWrap sx={{ fontWeight: 'bold', mr: 1 }}>
-                          Exposure Comment:
-                        </Typography>
-                        <EditableField fieldPath={['Exposure comment']} value={data['Exposure comment']} onDataChange={handleDataChange} editingField={editingField} setEditingField={setEditingField} isEditable={isEditable} allData={data} />
-                      </Box>
-                    )}
-
-                    {data['Prior service comment'] && (
-                      <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}>
-                        <Typography variant="body2" noWrap sx={{ fontWeight: 'bold', mr: 1 }}>
-                          Prior Service Comment:
-                        </Typography>
-                        <EditableField
-                          fieldPath={['Prior service comment']}
-                          value={data['Prior service comment']}
-                          onDataChange={handleDataChange}
-                          editingField={editingField} setEditingField={setEditingField}
-                          isEditable={isEditable} allData={data}
-                        />
-                      </Box>
-                    )}
-                    {isUnpaidOkLender && (
-                      <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}>
-                        <Typography variant="body2" noWrap sx={{ fontWeight: 'bold', color: 'success.main' }}>
-                          Unpaid OK can proceed with review
-                        </Typography>
-                      </Box>
-                    )}
-                    {/* {data['Assignment Type']?.toLowerCase() === 'purchase transaction' && ( */}
-                    {data['Assignment Type']?.toLowerCase() === 'purchase transaction' && !contractExtracted && (
-                      <Tooltip title="Extract Contract Section">
-                        <IconButton
-                          // onClick={() => handleExtract('CONTRACT')}
-                          onClick={() => {
-                            handleExtract('CONTRACT');
-                            setContractExtracted(true);
-                          }}
-                          size="small"
-                          sx={{ color: '#db1873ff', fontSize: '0.9rem' }}
-                          disabled={loading}
-                        >Assignment Type Purchase Transaction<WarningIcon /></IconButton>
-                      </Tooltip>
-                    )}
-                  </Grid>
-                  <Grid item xs={12} sm={3} sx={{ display: 'flex', justifyContent: 'center' }}>
-                    <Box sx={{ width: '100%', maxWidth: 300 }}>
-                      {loading && (
-                        <>
-                          <Typography variant="body2" align="center" sx={{ fontWeight: 'bold' }}>
-                            Elapsed Time : {Math.floor(timer / 60)}m {timer % 60}s
-                          </Typography>
-                          <LinearProgress variant="determinate" value={extractionProgress} />
-                        </>
-                      )}
-                      {!loading && lastExtractionTime && (
-                        <Typography variant="body2" sx={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>
-                          Last extraction: {lastExtractionTime >= 60 ? `${Math.floor(lastExtractionTime / 60)}m ` : ''}
-                          {`${(lastExtractionTime % 60).toFixed(1)}s`}
-                        </Typography>
-                      )}
-                    </Box>
-                  </Grid>
-                  <Grid item xs={12} sm={3}>
-                    <Box sx={{ display: 'flex', alignItems: 'left', marginRight: '10px', marginLeft: '100px', cursor: 'pointer' }} onClick={handleTimerToggle}>
-                      <Tooltip title={isTimerRunning ? "Click to pause timer" : "Click to start timer"}>
-                        <Typography variant="body2" sx={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>Total Time:
-                          {Math.floor(fileUploadTimer / 3600).toString().padStart(2, '0')}:
-                          {Math.floor((fileUploadTimer % 3600) / 60).toString().padStart(2, '0')}:
-                          {(fileUploadTimer % 60).toString().padStart(2, '0')}
-                        </Typography>
-                      </Tooltip>
-                    </Box>
-                  </Grid>
-
-                </Grid>
-
-              }
-            </Stack>
+              {/* Generate PDF Button */}
+              <Grid item>
+                <Button
+                  variant="outlined" component="label" className="select"
+                  color="primary"
+                  onClick={handleGeneratePdf}
+                  disabled={Object.keys(data).length === 0}
+                >
+                  {isGeneratingPdf ? (
+                    <CircularProgress size={24} color="inherit" />
+                  ) : (
+                    "Generate PDF"
+                  )}
+                </Button>
+              </Grid>
+            </Grid>
           </Paper>
 
+          <Paper elevation={2} sx={{ p: 5, position: 'sticky', top: 0, zIndex: 1100, height: 'fit-content', backgroundColor: activeTheme.palette.background.paper }}>
+            {selectedFile && (
+
+              <Stack direction="row" spacing={3} alignItems="center" flexWrap="wrap">
+
+                {/* FILE NAME */}
+                <Typography variant="body2" noWrap>
+                  Selected File: <strong>{selectedFile.name}</strong>
+                </Typography>
+
+                {/* LOADING AREA */}
+                {loading && (
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                    <CircularProgress size={24} />
+                    <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                      Elapsed: {Math.floor(timer / 60)}m {timer % 60}s
+                    </Typography>
+                    <LinearProgress
+                      variant="determinate"
+                      value={extractionProgress}
+                      sx={{ width: '100px' }}
+                    />
+                  </Box>
+                )}
+
+                {/* TOTAL TIME TIMER */}
+                <Tooltip title={isTimerRunning ? "Click to pause timer" : "Click to start timer"}>
+                  <Typography
+                    variant="body2"
+                    sx={{ fontWeight: 'bold', whiteSpace: 'nowrap', cursor: 'pointer' }}
+                    onClick={handleTimerToggle}
+                  >
+                    Total Time: {Math.floor(fileUploadTimer / 3600).toString().padStart(2, '0')}:
+                    {Math.floor((fileUploadTimer % 3600) / 60).toString().padStart(2, '0')}:
+                    {(fileUploadTimer % 60).toString().padStart(2, '0')}
+                  </Typography>
+                </Tooltip>
+
+                {/* LAST EXTRACTION */}
+                {!loading && lastExtractionTime && (
+                  <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                    Last extraction: {lastExtractionTime >= 60 ? `${Math.floor(lastExtractionTime / 60)}m ` : ''}
+                    {`${(lastExtractionTime % 60).toFixed(1)}s`}
+                  </Typography>
+                )}
+
+              </Stack>
+            )}
+          </Paper>
+          <Paper elevation={2} sx={{ p: 5, top: 0, zIndex: 1100, height: 'fit-content', backgroundColor: activeTheme.palette.background.paper }} >
+
+            <Grid item xs={12} md={8}>
+              {selectedFile && (
+                <Stack spacing={1}>
+                  {data['FHA Case No.'] && (
+                    <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}>
+                      <Typography variant="body2" noWrap sx={{ fontWeight: 'bold', color: 'secondary.main' }}>
+                        FHA Case #: {data['FHA Case No.']}
+                      </Typography>
+                      <Tooltip title="Check FHA Requirements">
+                        <IconButton onClick={handleFhaCheck} size="small" sx={{ ml: 0.5 }}>
+                          <Info fontSize="small" color="info" />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+                  )}
+
+                  {data['ANSI'] && (
+                    <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}>
+                      <Typography variant="body2" sx={{ fontWeight: 'bold', mr: 1, flexShrink: 0 }}>
+                        ANSI:
+                      </Typography>
+                      <EditableField fieldPath={['ANSI']} value={data['ANSI']} onDataChange={handleDataChange} editingField={editingField} setEditingField={setEditingField} isEditable={isEditable} allData={data} />
+                    </Box>
+                  )}
+
+
+                  {data['Exposure comment'] && (
+                    <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}>
+                      <Typography variant="body2" noWrap sx={{ fontWeight: 'bold', mr: 1 }}>
+                        Exposure Comment:
+                      </Typography>
+                      <EditableField fieldPath={['Exposure comment']} value={data['Exposure comment']} onDataChange={handleDataChange} editingField={editingField} setEditingField={setEditingField} isEditable={isEditable} allData={data} />
+                    </Box>
+                  )}
+
+                  {data['Prior service comment'] && (
+                    <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}>
+                      <Typography variant="body2" noWrap sx={{ fontWeight: 'bold', mr: 1 }}>
+                        Prior Service Comment:
+                      </Typography>
+                      <EditableField
+                        fieldPath={['Prior service comment']}
+                        value={data['Prior service comment']}
+                        onDataChange={handleDataChange}
+                        editingField={editingField} setEditingField={setEditingField}
+                        isEditable={isEditable} allData={data}
+                      />
+                    </Box>
+                  )}
+                  {isUnpaidOkLender && (
+                    <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}>
+                      <Typography variant="body2" noWrap sx={{ fontWeight: 'bold', color: 'success.main' }}>
+                        Unpaid OK can proceed with review
+                      </Typography>
+                    </Box>
+                  )}
+                  {String(data['Assignment Type'] || '').toLowerCase() === 'purchase transaction' && !contractExtracted && (<Tooltip title="Extract Contract Section">
+                    <IconButton
+                      onClick={() => {
+                        handleExtract('CONTRACT');
+                        setContractExtracted(true);
+                      }}
+                      size="small"
+                      sx={{ color: 'warning.main', fontSize: '0.9rem', justifyContent: 'flex-start', p: 0.5 }}
+                      disabled={loading}
+                    ><WarningIcon sx={{ mr: 0.5 }} /> Purchase Transaction: Extract Contract</IconButton>
+                  </Tooltip>
+                  )}
+                </Stack>
+              )}
+            </Grid>
+          </Paper>
           <ComparisonDialog
             open={isComparisonDialogOpen}
             onClose={() => setIsComparisonDialogOpen(false)}
